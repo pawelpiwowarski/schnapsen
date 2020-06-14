@@ -3,6 +3,7 @@ This file contains functions to regulate game play.
 """
 from api import State, Deck, util
 from multiprocessing import Process, Manager
+import random
 
 def play(
             player1,            # type: Bot
@@ -56,7 +57,7 @@ def play(
 def get_move(state, player, max_time, verbose):
     """
     Asks a player bot for a move. Creates a separate process, so we can kill
-    computation if ti exceeds a maximum time.
+    computation if it exceeds a maximum time.
     :param state:
     :param player:
     :return:
@@ -68,7 +69,8 @@ def get_move(state, player, max_time, verbose):
                             # the player's. This allows it to pass the move to us
 
     # Start a process with the function 'call_player' and the given arguments
-    process = Process(target=call_player, args=(player, state, result))
+    # We also give it the state of the global PRNG to ensure execution is deterministic whenever no timeouts happen
+    process = Process(target=call_player, args=(player, state, random.getstate(),  result))
 
     # Start the process
     process.start()
@@ -92,7 +94,8 @@ def get_move(state, player, max_time, verbose):
 
     return move
 
-def call_player(player, state, result):
+def call_player(player, state, randomState, result):
+    random.setstate(randomState)
     # Call the player to make the move
     move = player.get_move(state)
     # Put the move in the shared variable, so it can be read by the
