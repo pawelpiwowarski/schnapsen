@@ -70,6 +70,8 @@ def get_move(state, player, max_time, verbose):
 
     # Start a process with the function 'call_player' and the given arguments
     # We also give it the state of the global PRNG to ensure execution is deterministic whenever no timeouts happen
+    #we make a call to random to ensure that next invocations of get_move will give start with a different state of the rng
+    random.random()
     process = Process(target=call_player, args=(player, state, random.getstate(),  result))
 
     # Start the process
