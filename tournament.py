@@ -37,7 +37,7 @@ def run_tournament(options):
             # Generate a state with a random seed
             state = State.generate(phase=int(options.phase))
 
-            winner, score = engine.play(bots[p[0]], bots[p[1]], state, options.max_time*1000, verbose=False, fast=options.fast)
+            winner, score = engine.play(bots[p[0]], bots[p[1]], state, options.max_time*1000, verbose=options.verbose, fast=options.fast)
 
             if winner is not None:
                 winner = p[winner - 1]
@@ -80,6 +80,11 @@ if __name__ == "__main__":
                         dest="fast",
                         action="store_true",
                         help="This option forgoes the engine's check of whether a bot is able to make a decision in the allotted time, so only use this option if you are sure that your bot is stable.")
+
+    parser.add_argument("-v", "--verbose",
+                        dest="verbose",
+                        action="store_true",
+                        help="Print verbose information")
 
     options = parser.parse_args()
 
