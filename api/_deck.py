@@ -34,7 +34,7 @@ class Deck:
 	# Variable that stores the previous trick that was evaluated.
 	# Starts out as [None, None], then [int, int] after
 	# the first trick has been evaluated.
-	__previous_trick = [None, None];
+	__previous_trick = [None, None]
 
 	# A variable length list of card indexes representing the
 	# cards currently in stock, and more importantly, their order.
@@ -205,7 +205,7 @@ class Deck:
 		self.__card_state[self.__trick[0]] = self.__card_state[self.__trick[1]] = self.__p1_perspective[self.__trick[0]] = self.__p1_perspective[self.__trick[1]] = self.__p2_perspective[self.__trick[0]] = self.__p2_perspective[self.__trick[1]] = "P1W" if winner == 1 else "P2W"
 
 		# Don't need to make a deep copy in this instance, tested.
-		self.__previous_trick = self.__trick;
+		self.__previous_trick = self.__trick
 		self.__trick = [None, None]
 
 	def add_to_perspective(self, player, index, card_state):
@@ -222,14 +222,12 @@ class Deck:
 		else:
 			self.__p2_perspective[index] = card_state
 
-	#Look into overloading this function as well
-	# Generates a new deck based on a seed. If no seed is given, a random seed in generated.
+	# Generates a new deck.
 	@staticmethod
-	def generate(id=None):
+	def generate():
 
-		rng = random.Random(id)
 		shuffled_cards = list(range(20))
-		rng.shuffle(shuffled_cards)
+		random.shuffle(shuffled_cards)
 
 		card_state = [0]*20
 		p1_perspective = ["U"]*20
@@ -257,19 +255,14 @@ class Deck:
 
 		return Deck(card_state, stock, p1_perspective, p2_perspective)
 
-	def make_assumption(self, seed=None):
+	def make_assumption(self):
 		"""
 		Identifies all unknown cards from the perspective of
 		the relevant player, and makes guesses for their states.
 
-		:param seed: Optional random number generator seed.
 		:return: A deck object with the card_state array changed
 		to represent a random guess of the states of the unknown cards.
 		"""
-		if seed is None:
-			seed = random.randint(0, 100000)
-
-		rng = random.Random(seed)
 
 		perspective = self.get_perspective()
 
@@ -277,7 +270,7 @@ class Deck:
 
 		unknowns = [index for index, card in enumerate(perspective) if card == "U"]
 
-		rng.shuffle(unknowns)
+		random.shuffle(unknowns)
 
 		other_player_term = "P2H" if self.__signature == 1 else "P1H"
 

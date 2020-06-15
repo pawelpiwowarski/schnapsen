@@ -17,7 +17,7 @@ def other(
     :param player:
     :return:
     """
-    return 1 if player_id == 2 else 2 # type: int
+    return 1 if player_id == 2 else 2
 
 def get_suit(card_index):
     """
