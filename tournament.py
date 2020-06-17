@@ -8,9 +8,11 @@ python play.py -h
 
 from argparse import ArgumentParser
 from api import State, util, engine
-import random, time
+import random
 
 def run_tournament(options):
+    # Set the seed for the PRNG globally
+    random.seed(options.seed)
 
     botnames = options.players.split(",")
 
@@ -25,10 +27,12 @@ def run_tournament(options):
     totalgames = (n*n - n)/2 * options.repeats
     playedgames = 0
 
-    print('Playing {} games:'.format(int(totalgames)))
-    for a, b in matches:
-        for r in range(options.repeats):
+    states = []
 
+    # First pre-generate all the future game states in advance.
+    # The pre-generation allows the PRNG to produce the same decks every run.
+    for a, b in matches:
+        for _ in range(options.repeats):
             if random.choice([True, False]):
                 p = [a, b]
             else:
@@ -36,15 +40,19 @@ def run_tournament(options):
 
             # Generate a state with a random seed
             state = State.generate(phase=int(options.phase))
+            states.append((p, state))
 
-            winner, score = engine.play(bots[p[0]], bots[p[1]], state, options.max_time*1000, verbose=options.verbose, fast=options.fast)
+    print('Playing {} games:'.format(int(totalgames)))
+    for p, state in states:
+        winner, score = engine.play(bots[p[0]], bots[p[1]], state, options.max_time*1000, verbose=options.verbose, fast=options.fast)
 
-            if winner is not None:
-                winner = p[winner - 1]
-                wins[winner] += score
+        if winner is not None:
+            winner = p[winner - 1]
+            wins[winner] += score
 
-            playedgames += 1
-            print('Played {} out of {:.0f} games ({:.0f}%): {} \r'.format(playedgames, totalgames, playedgames/float(totalgames) * 100, wins))
+        playedgames += 1
+        print('Played {} out of {:.0f} games ({:.0f}%): {} \r'.format(playedgames, totalgames, playedgames/float(totalgames) * 100, wins))
+
 
     print('Results:')
     for i in range(len(bots)):
@@ -85,6 +93,11 @@ if __name__ == "__main__":
                         dest="verbose",
                         action="store_true",
                         help="Print verbose information")
+
+    parser.add_argument("--seed",
+                        dest="seed",
+                        help="Set the initial value for the pseudo-random number generator. Using the same seed will result in the same tournament outcome if no changes are made.",
+                        default=None)
 
     options = parser.parse_args()
 

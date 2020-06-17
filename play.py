@@ -7,12 +7,13 @@ python play.py -h
 """
 
 from argparse import ArgumentParser
-import sys
+import sys, random
 
 from api import State, engine, util
 
-
 def call_engine(options):
+    # Set the seed for the PRNG globally
+    random.seed(options.seed)
 
     # Create player 1
     player1 = util.load_player(options.player1)
@@ -28,7 +29,6 @@ def call_engine(options):
         print('   Start state: ' + str(state))
 
     # Play the game
-
     engine.play(player1, player2, state=state, max_time=options.max_time*1000, verbose=(not options.quiet))
 
 if __name__ == "__main__":
@@ -61,6 +61,10 @@ if __name__ == "__main__":
                         help="Whether to hide the printed output.",
                         action="store_true")
 
+    parser.add_argument("--seed",
+                        dest="seed",
+                        help="Set the initial value for the pseudo-random number generator. Using the same seed will result in the same game outcome if no changes are made.",
+                        default=None)
 
 
     options = parser.parse_args()
