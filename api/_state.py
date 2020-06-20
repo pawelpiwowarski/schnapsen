@@ -382,7 +382,12 @@ class State:
 		:param player: The player id of the player whose points we want
 		:return: The points of the requested player
 		"""
-		return self.__p1_points if player == 1 else self.__p2_points
+		if player == 1:
+			return self.__p1_points
+		elif player == 2:
+			return self.__p2_points
+		else:
+			raise ValueError("The player can either be 1 or 2.")
 
 	def get_pending_points(self, player):
 		"""
