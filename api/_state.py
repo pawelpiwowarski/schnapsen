@@ -59,7 +59,7 @@ class State:
 		:param move: Tuple of length 2 of which each element can either be an int or None
 		:return: Newly computed state based on current state and given move
 		"""
-
+		assert not move == None, "The move provided was None"
 		if self.__signature is not None and self.__signature != self.whose_turn():
 			raise RuntimeError('\n\nGame is in phase 1. Cannot view next state with imperfect information. Try making an assumption first.\n')
 
@@ -435,6 +435,7 @@ class State:
 		:param move: tuple representing move
 		:return: A boolean indicating whether the given move is valid considering the current state
 		"""
+		assert not move == None, "The move provided was None"
 		if (self.__phase == 1 or self.__leads_turn) and move[0] is not None and move[1] is None:
 			return (self.__deck.get_card_state(move[0]) == ("P" + str(self.whose_turn()) + "H"))
 		return move in self.moves()
