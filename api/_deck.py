@@ -9,10 +9,18 @@ class Deck:
 	__SUITS = ["C", "D", "H", "S"]
 
 	# A list of length 20 representing all cards and their states
+	# The state is represented by a letter as follows:
+	# "P1H" : in the hand of player 1, 
+	# "P2H" : in the hand of player 2
+	# "S" : on the stack
 	__card_state = None # type: list[str]
 
 	# A list of length 20 representing all KNOWN cards and
 	# their states from the perspective of each player
+	# "P1H" : in the hand of player 1, 
+	# "P2H" : in the hand of player 2
+	# "U" : unknown - this will happen during the first phase of the game since the players don' t know the location of all cards
+	# "S" : on the stack
 	__p1_perspective = None
 	__p2_perspective = None
 
