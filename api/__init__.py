@@ -3,3 +3,4 @@
 
 from ._deck import Deck
 from ._state import State
+from .util import *

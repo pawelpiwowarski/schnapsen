@@ -43,7 +43,7 @@ class Bot:
 
 				# If we are in an imperfect information state, make an assumption.
 
-				sample_state = Bot.make_pessimistic_assumption(state) if state.get_phase() == 1 else state
+				sample_state = Bot.__make_pessimistic_assumption(state) if state.get_phase() == 1 else state
 
 				score = self.evaluate(sample_state.next(move), player)
 
@@ -54,12 +54,17 @@ class Bot:
 		return best_move # Return the best scoring move
 
 	@staticmethod
-	def make_pessimistic_assumption(state: State):
+	def __make_pessimistic_assumption(state: State):
 		"""
-		This code was moved here from deck and state. Trying to iompletment make_assumption outside of these classes.
+		This code was moved here from deck and state. Trying to impletment make_assumption outside of these classes.
 		
 		Takes the current imperfect information state and makes a 
 		random guess as to the states of the unknown cards.
+
+		Note: this current implementation makes a mistake. 
+		It creates the state of the opponent such that the opponent forgets about cards of the current player knows about. 
+		For example from an earlier mariage played by the current player, or a trump exchange.
+
 		:return: A perfect information state object.
 		"""
 		#This implementation assumed the game is in the first phase
@@ -84,7 +89,7 @@ class Bot:
 		numberOfUnknownForStock = len(unknowns) - other_player_unknowns
 
 		#now, we split the cards for the hand of the other player and the stock
-		toOtherPlayerHand, toStock = Bot.splitcards(unknowns, other_player_unknowns, numberOfUnknownForStock)
+		toOtherPlayerHand, toStock = Bot.__splitcards(unknowns, other_player_unknowns, numberOfUnknownForStock)
 
 		# we nnow create a new perspective, thereby also filling in the unknowns
 		newGlobalPerspective = list(oldCurrentPlayerPerspective)
@@ -146,7 +151,26 @@ class Bot:
 		return newState
 
 	@staticmethod
-	def splitcards (cards: List[int], neededForOtherPlayer: int, neededForStock: int) -> Tuple[List[int], List[int]]:
+	def __splitcards (cards: List[int], neededForOtherPlayer: int, neededForStock: int) -> Tuple[List[int], List[int]]:
+		"""
+		Split the card in two parts, one which will be set for the other player, the second part will go to the stock
+		Note that they will go onto the stock in exactly that order.
+
+		Parameters
+		----------
+		cards : List[int]
+			The cards to be divided. This contains indices as used in the Deck class
+		neededForOtherPlayer : int
+			The number of cards which must be given to the other player
+		neededForStock : int
+			The number of cards to be put on the stock
+
+		Returns
+		--------
+		Tuple[List[int], List[int]]
+			A tuple containing two lists. The first list are the cards given to the other player, the second list is put on the stock.
+
+		""" 
 		assert len(cards) == neededForOtherPlayer + neededForStock
 		####### here you would change the order in unknowns #####
 		#For now just shuffling them with a fixed seed for testing
