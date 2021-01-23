@@ -318,6 +318,7 @@ class Deck:
 		return deck
 
 	def get_perspective(self, player=None):
+		assert player == None or player == 1 or player == 2, "The value provided for player is invalid, this can only be 1, 2 or None"
 		if self.__signature is None:
 			if player is None:
 				return self.__card_state
