@@ -324,6 +324,20 @@ class Deck:
 				return self.__card_state
 			return list(self.__p1_perspective) if player == 1 else list(self.__p2_perspective)
 		return list(self.__p1_perspective) if self.__signature == 1 else list(self.__p2_perspective)
+	
+	def get_masked_opponent_perspective(self, opponent = None):
+		assert opponent in [None, 1, 2]
+		if self.__signature == None and opponent == None:
+			raise Exception("This deck is not part of a game that can only be observed by one of the players, so we cannot know who the opoonent is. you need to specify the opponent argument.")
+		if (self.__signature == 1 and (opponent == 1 or opponent == None))  or (self.__signature == None and opponent == 1):
+			tomask = list(self.__p2_perspective)
+			masked = [status if status == 'P1H' else '-' for status in tomask]
+		elif (self.__signature == 2 and (opponent == 2 or opponent == None)) or (self.__signature == None and opponent == 2):
+			tomask = list(self.__p1_perspective)
+			masked = [status if status == 'P2H' else '-' for status in tomask]
+		else:
+			raise Exception("you are not asking for a masking of your opponent.")
+		return masked
 
 	def get_signature(self):
 		return self.__signature

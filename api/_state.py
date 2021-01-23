@@ -28,20 +28,24 @@ class State:
 				 p1_points=0,
 				 p2_points=0,
 				 p1_pending_points=0,
-				 p2_pending_points=0
+				 p2_pending_points=0,
+				 leads_turn=True
 				 ):
 		"""
 		:param deck:			The Deck object which holds the full deck state.
 		:param player1s_turn:	A boolean indicating whether it is player 1's turn or not
 		:param p1/2_points:		Integer variables that hold each player's current points
 		:param p1/2_pending_points:	   Integer variables that hold each player's pending points
+		:param leads_turn:   Is the current player leading the turn? If not, then the deck must also have a partial trick set!
 		"""
+		
+		assert leads_turn or (deck.get_trick()[0] != None or deck.get_trick()[1] != None)
 		self.__deck = deck
 
 		self.__phase = 1 if deck.get_stock_size() != 0 else 2
 
 		self.__player1s_turn = player1s_turn
-		self.__leads_turn = True
+		self.__leads_turn = leads_turn
 
 		self.__p1_points = p1_points
 		self.__p2_points = p2_points
@@ -374,6 +378,13 @@ class State:
 		:return: The perspective list of the indicated player
 		"""
 		return self.__deck.get_perspective(player)
+	
+	def get_masked_opponent_perspective(self, opponent=None):
+		"""
+		Gives you a view of what the opponent knows about the cards of the current player.
+		The opponent can know some cards of the current player because of earlier performed marriages and trump exchanges
+		"""
+		return self.__deck.get_masked_opponent_perspective(self, opponent=None)
 
 	def leader(self):
 		"""

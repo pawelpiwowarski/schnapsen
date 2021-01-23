@@ -17,7 +17,7 @@ class Bot:
 	# How deep to sample
 	__depth = -1
 
-	def __init__(self, num_samples=1, depth=8):
+	def __init__(self, num_samples=4, depth=8):
 		self.__num_samples = num_samples
 		self.__depth = depth
 
@@ -130,12 +130,17 @@ class Bot:
 			player1_perspective = other_player_perspective
 
 
-		print (oldCurrentPlayerPerspective)
-		print (newGlobalPerspective)
-		print (player1_perspective)
-		print (player2_perspective)
+		#print (oldCurrentPlayerPerspective)
+		#print (newGlobalPerspective)
+		#print (player1_perspective)
+		#print (player2_perspective)
 		deck = Deck(newGlobalPerspective, stock, player1_perspective , player2_perspective, trump_suit)
-
+		
+		#we need to get the deck in the same state. to do this, we need to set the ongoing trick if we are not leading.
+		isCurrentPlayerLeader = state.leader() == currentplayer
+		if not isCurrentPlayerLeader:	
+			opponent_played_card = state.get_opponents_played_card()
+			deck.set_trick(util.other(currentplayer), opponent_played_card)
 
 		player1s_turn = currentplayer == 1
 		p1_points = state.get_points(1)
@@ -145,7 +150,7 @@ class Bot:
 
 
 		#we need to make a new state
-		newState = State(deck, player1s_turn, p1_points, p2_points, p1_pending_points, p2_pending_points)
+		newState = State(deck, player1s_turn, p1_points, p2_points, p1_pending_points, p2_pending_points, leads_turn=isCurrentPlayerLeader)
 		# print (state)
 		# print (newState)
 		return newState
@@ -174,7 +179,7 @@ class Bot:
 		assert len(cards) == neededForOtherPlayer + neededForStock
 		####### here you would change the order in unknowns #####
 		#For now just shuffling them with a fixed seed for testing
-		rng = random.Random(467486564)
+		rng = random.Random()
 		rng.shuffle(cards)
 		forOtherPlayer = cards[:neededForOtherPlayer]
 		forStock = cards[neededForOtherPlayer:]
@@ -197,7 +202,6 @@ class Bot:
 		"""
 
 		score = 0.0
-
 		for _ in range(self.__num_samples):
 
 			st = state.clone()
@@ -206,9 +210,9 @@ class Bot:
 			for i in range(self.__depth):
 				if st.finished():
 					break
-
-				st = st.next(random.choice(st.moves()))
-
+				#print (st._State__deck.get_perspective(None))
+				move = random.choice(st.moves())
+				st = st.next(move)
 			score += self.heuristic(st, player)
 
 		return score/float(self.__num_samples)
