@@ -281,16 +281,20 @@ class State:
 		return state
 
 	@staticmethod
-	def generate(id=None, phase=1):
+	def generate(id=None, phase=1, startingPlayer = None):
 		"""
 		:param id: The seed used for random generation. Defaults at random, but can be set for deterministic state generation
 		:param phase: The phase at which your generated state starts at
+		:param startingPlayer: the player (1 or 2) that must start the game. If None, it will be drawn randomly.
 		:return: A starting state generated using the parameters given
 		"""
-
+		assert startingPlayer == None or startingPlayer == 1 or startingPlayer == 2
 		rng = random.Random(id)
 		deck = Deck.generate(id)
-		player1s_turn = rng.choice([True, False])
+		if startingPlayer == None:
+			player1s_turn = rng.choice([True, False])
+		else:
+			player1s_turn = (startingPlayer == 1)
 
 		state = State(deck, player1s_turn)
 
