@@ -21,7 +21,7 @@ def call_engine(options):
     player2 = util.load_player(options.player2)
 
     # Generate or load the map
-    state = State.generate(phase=int(options.phase))
+    state = State.generate(phase=int(options.phase), startingPlayer=1)
 
     if not options.quiet:
         # print('-- Using map with id {} '.format(id))
@@ -29,7 +29,7 @@ def call_engine(options):
 
     # Play the game
 
-    engine.play(player1, player2, state=state, max_time=options.max_time*1000, verbose=(not options.quiet))
+    engine.play(player1, player2, state=state, max_time=options.max_time*1000, verbose=(not options.quiet), fast=options.fast)
 
 if __name__ == "__main__":
 
@@ -56,6 +56,12 @@ if __name__ == "__main__":
                         dest="max_time",
                         help="maximum amount of time allowed per turn in seconds (default: 5)",
                         type=int, default=5)
+
+    parser.add_argument("-f", "--fast",
+                        dest="fast",
+                        action="store_true",
+                        help="This option forgoes the engine's check of whether a bot is able to make a decision in the allotted time, so only use this option if you are sure that your bot is stable.")
+
 
     parser.add_argument("-q", "--quiet", dest="quiet",
                         help="Whether to hide the printed output.",
