@@ -45,6 +45,31 @@ def get_card_name(card_index):
     return get_rank(card_index), get_suit(card_index)
 
 
+class BotFactory:
+    """
+    This factory can create newly instantiated bts each time it is called. The class is loaded and checked once. 
+    """
+    def __init__(self, playerName, className="Bot"):
+        """
+        Create a new BotFactory for a bot with the given name.
+        If the name is 'random', this factory will load the file 
+        ./bots/random/random.py and instantiate the class "Bot" from that file.
+        """
+        self.cls = load_player_class(playerName, className)
+    def create_player():
+        """
+        Instantiate a new bot
+        """
+        # Get a reference to the class
+        try:
+            player = cls() # Instantiate the class
+            player.__init__()
+            return player
+        except:
+            print('ERROR: Could not load the class "Bot" {} from file {}.'.format(classname, path))
+            traceback.print_exc()
+            sys.exit()
+
 def load_player(name, classname='Bot'):
     #
     """
