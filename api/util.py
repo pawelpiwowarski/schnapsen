@@ -2,7 +2,7 @@
 General utility functions
 """
 
-import math, sys, os
+import math, sys, os, inspect
 import traceback
 import importlib
 from api import Deck
@@ -55,8 +55,33 @@ def load_player(name, classname='Bot'):
     :param name: The name of a bot
     :return: An instantiated Bot
     """
-    name = name.lower()
-    path = './bots/{}/{}.py'.format(name, name)
+    cls = load_player_class(name, classname=classname)
+
+    # Get a reference to the class
+    try:
+        player = cls() # Instantiate the class
+        player.__init__()
+        return player
+    except:
+        print('ERROR: Could not load the class "Bot" {} from file {}.'.format(classname, path))
+        traceback.print_exc()
+        sys.exit()
+
+
+def load_player_class(name, classname='Bot'):
+    #
+    """
+    Accepts a string representing a bot and returns an instance of that bot. If the name is 'random'
+    this function will load the file ./bots/random/random.py and instantiate the class "Bot"
+    from that file.
+
+    :param name: The name of a bot
+    :return: An instantiated Bot
+    """
+    if not name.islower():
+        print(''' WARNING: You provided a botname with capital letters in it. 
+        The system will lowercase that to ensure compatibility with Windsows!.''')
+        name = name.lower()
 
     # Load the python file (making it a _module_)
     try:
@@ -67,17 +92,25 @@ def load_player(name, classname='Bot'):
         traceback.print_exc()
         sys.exit(1)
 
-    # Get a reference to the class
+    # Check whter the class has the right methods
     try:
         cls = getattr(module, classname)
-        player = cls() # Instantiate the class
-        player.__init__()
+        initParams = inspect.signature(cls.__init__).parameters
+        for ((par, parspec), index) in zip(initParams.items(), range(len(initParams))):
+            if index == 0:
+                # this is the self parameter
+                continue
+            else:
+                if parspec.default == inspect.Parameter.empty:
+                    raise Exception("The botclass " + name + "could not be loaded because its contruction requires non default parameters") 
+        return cls
     except:
+        path = './bots/{}/{}.py'.format(name, name)
         print('ERROR: Could not load the class "Bot" {} from file {}.'.format(classname, path))
         traceback.print_exc()
         sys.exit()
 
-    return player
+
 
 def ratio_points(state, player):
 	if state.get_points(player) + state.get_points(other(player)) != 0:
