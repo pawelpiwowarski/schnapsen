@@ -56,19 +56,23 @@ class BotFactory:
         ./bots/random/random.py and instantiate the class "Bot" from that file.
         """
         self.cls = load_player_class(playerName, className)
-    def create_player():
+        self.botname = playerName
+
+    def create_player(self):
         """
         Instantiate a new bot
         """
         # Get a reference to the class
         try:
-            player = cls() # Instantiate the class
+            player = self.cls() # Instantiate the class
             player.__init__()
             return player
         except:
             print('ERROR: Could not load the class "Bot" {} from file {}.'.format(classname, path))
             traceback.print_exc()
             sys.exit()
+    def get_player_name(self):
+        return self.botname
 
 def load_player(name, classname='Bot'):
     #
