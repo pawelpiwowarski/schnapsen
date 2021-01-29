@@ -111,7 +111,7 @@ def load_player_class(name, classname='Bot'):
         print(''' WARNING: You provided a botname with capital letters in it. 
         The system will lowercase that to ensure compatibility with Windsows!.''')
         name = name.lower()
-
+    path = './bots/{}/{}.py'.format(name, name)
     # Load the python file (making it a _module_)
     try:
         module = importlib.import_module('bots.{}.{}'.format(name, name))
@@ -134,7 +134,7 @@ def load_player_class(name, classname='Bot'):
                     raise Exception("The botclass " + name + "could not be loaded because its contruction requires non default parameters") 
         return cls
     except:
-        path = './bots/{}/{}.py'.format(name, name)
+        
         print('ERROR: Could not load the class "Bot" {} from file {}.'.format(classname, path))
         traceback.print_exc()
         sys.exit()
