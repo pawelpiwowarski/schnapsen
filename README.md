@@ -1,4 +1,4 @@
-Intelligent Systems 2020 and Project Artificial Intelligence 2020
+Intelligent Systems and Project Intelligent Systems
 =================================================================
 
 This is the practical material for the Intelligent Systems course and the Project AI, based on the
