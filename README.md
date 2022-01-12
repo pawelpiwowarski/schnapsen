@@ -1,4 +1,6 @@
 Intelligent Systems and Project Intelligent Systems
+
+Project by Pawel Piwowarski, Adam Rydzyński, Anna Kosycarz
 =================================================================
 
 This is the practical material for the Intelligent Systems course and the Project AI, based on the
