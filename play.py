@@ -27,7 +27,7 @@ def call_engine(options):
         # print('-- Using map with id {} '.format(id))
         print('   Start state: ' + str(state))
 
-    # Play the game
+    # Play the gamec
 
     engine.play(player1, player2, state=state, max_time=options.max_time*1000, verbose=(not options.quiet), fast=options.fast)
 
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     parser.add_argument("-1", "--player1",
                         dest="player1",
                         help="the program to run for player 1 (default: rand)",
-                        default="rand")
+                        default="ml")
 
     parser.add_argument("-2", "--player2",
                         dest="player2",

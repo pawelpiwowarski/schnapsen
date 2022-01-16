@@ -4,10 +4,11 @@ A basic adaptive bot. This is part of the third worksheet.
 
 """
 
+from numpy import percentile
 from api import State, util
 import random, os
 from itertools import chain
-
+from api import Deck
 import joblib
 
 # Path of the model we will use. If you make a model
@@ -45,7 +46,7 @@ class Bot:
         best_move = None
 
         moves = state.moves()
-
+     
         if self.__randomize:
             random.shuffle(moves)
 
@@ -56,16 +57,20 @@ class Bot:
             # IMPLEMENT: Add a function call so that 'value' will
             # contain the predicted value of 'next_state'
             # NOTE: This is different from the line in the minimax/alphabeta bot
-            value = ???
-
+            
+            value = self.heuristic(next_state)
+            print(value)
             if maximizing(state):
                 if value > best_value:
                     best_value = value
                     best_move = move
+                    print(best_move)
+                    
             else:
                 if value < best_value:
                     best_value = value
                     best_move = move
+                    print(best_move)
 
         return best_value, best_move
 
@@ -76,14 +81,14 @@ class Bot:
 
         # These are the classes: ('won', 'lost')
         classes = list(self.__model.classes_)
-
+       
         # Ask the model for a prediction
         # This returns a probability for each class
         prob = self.__model.predict_proba(feature_vector)[0]
 
         # Weigh the win/loss outcomes (-1 and 1) by their probabilities
         res = -1.0 * prob[classes.index('lost')] + 1.0 * prob[classes.index('won')]
-
+ 
         return res
 
 def maximizing(state):
@@ -104,39 +109,44 @@ def features(state):
     :return: A tuple of floats: a feature vector representing this state.
     """
 
+
+        
     feature_set = []
 
     # Add player 1's points to feature set
-    p1_points = ???
+    p1_points = state.get_points(1)
 
     # Add player 2's points to feature set
-    p2_points = ???
+    p2_points = state.get_points(2)
 
     # Add player 1's pending points to feature set
-    p1_pending_points = ???
+    p1_pending_points = state.get_pending_points(1)
 
     # Add plauer 2's pending points to feature set
-    p2_pending_points = ???
+    p2_pending_points = state.get_pending_points(2)
 
     # Get trump suit
-    trump_suit = ???
+    trump_suit = state.get_trump_suit()
 
     # Add phase to feature set
-    phase = ???
+    phase = state.get_phase()
 
     # Add stock size to feature set
-    stock_size = ???
+    stock_size = state.get_stock_size()
 
     # Add leader to feature set
-    leader = ???
+    leader = state.leader()
 
     # Add whose turn it is to feature set
-    whose_turn = ???
+    whose_turn = state.whose_turn()
 
     # Add opponent's played card to feature set
-    opponents_played_card = ???
+    opponents_played_card = state.get_opponents_played_card()
 
-
+    # How many trump does a player hold? 
+ 
+		#Get all trump suit moves available
+    
     ################## You do not need to do anything below this line ########################
 
     perspective = state.get_perspective()
@@ -151,8 +161,10 @@ def features(state):
     perspective = [card if card != 'P2W' else [0, 0, 0, 0, 0, 1] for card in perspective]
 
     # Append one-hot encoded perspective to feature_set
+
     feature_set += list(chain(*perspective))
 
+   
     # Append normalized points to feature_set
     total_points = p1_points + p2_points
     feature_set.append(p1_points/total_points if total_points > 0 else 0.)
@@ -188,4 +200,6 @@ def features(state):
     feature_set += opponents_played_card_onehot
 
     # Return feature set
+
+
     return feature_set

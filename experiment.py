@@ -15,6 +15,8 @@ This is a simple question to answer, we simply build rand bots for a range of pa
 combination. We plot the results in a heat map
 
 """
+from os import stat
+from shutil import move
 import matplotlib as mpl
 mpl.use('Agg')
 from matplotlib import pyplot as plt
@@ -33,13 +35,22 @@ class Bot:
 
     def get_move(self, state):
 
+        moves = state.moves()
+
         if random.random() < self.__non_trump_move:
 
             # IMPLEMENT: Make the best non-trump move you can. Use the best_non_trump_card method written below.
-            pass
+            return best_non_trump_card(state)
 
         #IMPLEMENT: Make a random move (but exclude the best non-trump move from above)
-        pass
+
+        print(best_non_trump_card(state))
+ 
+        random_choice = random.choice(moves)
+        
+        while random_choice != best_non_trump_card(state):
+            random_choice = random.choice(moves)
+        return random.choice(moves)
 
 
 def empty(n):
