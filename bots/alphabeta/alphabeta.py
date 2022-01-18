@@ -60,7 +60,7 @@ class Bot:
                 if value < best_value:
                     best_value = value
                     best_move = move
-                    beta = best_value
+                    alpha = best_value
 
             # Prune the search tree
             # We know this state will never be chosen, so we stop evaluating its children
