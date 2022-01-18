@@ -64,7 +64,7 @@ if __name__ == "__main__":
     parser.add_argument("-p", "--players",
                         dest="players",
                         help="Comma-separated list of player names (enclose with quotes).",
-                        default="rdeep,ml")
+                        default="rdeep,group72_bot_minimax")
 
     parser.add_argument("-r", "--repeats",
                         dest="repeats",

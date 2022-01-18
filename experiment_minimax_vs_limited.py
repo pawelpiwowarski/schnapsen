@@ -24,7 +24,7 @@ from api import State, util
 
 import random
 from bots.group72_bot_minimax import group72_bot_minimax
-from bots.group72_bot_plain_ml import group72_bot_plain_ml 
+from bots.group72_bot_limited_4 import group72_bot_limited_4
 
 # Define the bot:
 # (we're not using it with the command line tools, so we can just put it here)
@@ -75,16 +75,18 @@ won_by_1 = 0
 won_by_2 = 0
 
 
-
+# We will move through the parameters from 0 to 1 in STEPS steps, and play REPEATS games for each
+# combination. If at combination (i, j) player 1 wins a game, we increment won_by_1[i][j]
 
 for i in range(STEPS):
     for j in range(100):
 
             # Make the players
             player1 = group72_bot_minimax.Bot()
-            player2 = group72_bot_plain_ml.Bot() 
+            player2 = group72_bot_limited_4.Bot() 
 
-    
+            state = State.generate()
+
             # play the game
             while not state.finished():
                 player = player1 if state.whose_turn() == 1 else player2
@@ -108,7 +110,7 @@ for i in range(STEPS):
 
 
 # Plot the data as a heatmap
-names = ['won_by_plain_ml', 'won_by_minimax_ml']
+names = ['won_by_minimax_ml', 'won_by_limited_ml']
 values = [won_by_1, won_by_2]
 
 plt.figure(figsize=(20, 20))
@@ -116,4 +118,4 @@ plt.subplot(131)
 plt.bar(names, values)
 # Always label your axes
 
-plt.savefig('experiment_plain_vs_minimax_1000_games.pdf')
+plt.savefig('experiment_plain_vs_limited_1000_games.pdf')

@@ -45,12 +45,12 @@ if __name__ == "__main__":
     parser.add_argument("-1", "--player1",
                         dest="player1",
                         help="the program to run for player 1 (default: rand)",
-                        default="group72_bot_minimax")
+                        default="group72_bot_limited_4")
 
     parser.add_argument("-2", "--player2",
                         dest="player2",
                         help="the program to run for player 2 (default: rand)",
-                        default="rand")
+                        default="rdeep")
 
     parser.add_argument("-t", "--max-time",
                         dest="max_time",

@@ -21,7 +21,7 @@ import joblib
 from bots.rand import rand
 # from bots.rdeep import rdeep
 
-from bots.ml.ml import features
+from bots.group72_bot_limited_4.group72_bot_limited_4 import features
 
 def create_dataset(path, player=rand.Bot(), games=2000, phase=1):
     """Create a dataset that can be used for training the ML bot model.
@@ -166,7 +166,7 @@ if options.train:
     print('instances per class: {}'.format(count))
 
     # Store the model in the ml directory
-    joblib.dump(model, "./bots/ml/" + options.model_path)
+    joblib.dump(model, "./bots/group72_bot_limited_4/" + options.model_path)
 
     end = time.time()
 
