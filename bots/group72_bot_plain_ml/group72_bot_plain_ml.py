@@ -23,7 +23,7 @@ class Bot:
 
     def __init__(self, randomize=True, model_file=DEFAULT_MODEL):
 
-        print(model_file)
+     
         self.__randomize = randomize
 
         # Load the model
@@ -59,18 +59,18 @@ class Bot:
             # NOTE: This is different from the line in the minimax/alphabeta bot
             
             value = self.heuristic(next_state)
-            print(value)
+
             if maximizing(state):
                 if value > best_value:
                     best_value = value
                     best_move = move
-                    print(best_move)
+          
                     
             else:
                 if value < best_value:
                     best_value = value
                     best_move = move
-                    print(best_move)
+           
 
         return best_value, best_move
 

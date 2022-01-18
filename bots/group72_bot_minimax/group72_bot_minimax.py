@@ -67,6 +67,7 @@ class Bot:
             # NOTE: This is different from the line in the minimax/alphabeta bot
 
             if state.get_phase() == 1: # [GROUP 72 - commment] if we are not in the second phase our bot "switches" to using minimax algorithm. 
+
                 value = self.heuristic(next_state)
             else:
                 value, _ = self.value(next_state)  # [GROUP 72 - commment] it is possible to limit the depth of the minimax search by adding 

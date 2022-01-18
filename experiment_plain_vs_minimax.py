@@ -23,33 +23,30 @@ from matplotlib import pyplot as plt
 from api import State, util
 
 import random
+from bots.group72_bot_minimax import group72_bot_minimax
+from bots.group72_bot_plain_ml import group72_bot_plain_ml 
 
 # Define the bot:
 # (we're not using it with the command line tools, so we can just put it here)
 class Bot:
 
     # Probability of moving with non-trump cards
-    __non_trump_move = 0.0
-    def __init__(self, non_trump_move=0.0):
-        self.__non_trump_move = non_trump_move
+  
 
     def get_move(self, state):
 
         moves = state.moves()
 
-        if random.random() < self.__non_trump_move:
+
 
             # IMPLEMENT: Make the best non-trump move you can. Use the best_non_trump_card method written below.
-            return best_non_trump_card(state)
-
+  
         #IMPLEMENT: Make a random move (but exclude the best non-trump move from above)
 
       
  
         random_choice = random.choice(moves)
-        
-        while random_choice != best_non_trump_card(state):
-            random_choice = random.choice(moves)
+
         return random_choice
 
 
@@ -60,33 +57,7 @@ def empty(n):
     """
     return [[0 for i in range(n)] for j in range(n)]
 
-def best_non_trump_card(state):
-    """
-    :param state: A state object
-    :return: A move tuple representing the highest rank non-trump move available
-    """
 
-    # All legal moves
-    moves = state.moves()
-    chosen_move = moves[0]
-
-    lowest_suit_moves = []
-
-    #Get all moves which are not trump suit or matching the suit of the enemy's card
-    for move in moves:
-
-        if move[0] is not None and util.get_suit(move[0]) != state.get_trump_suit():
-            lowest_suit_moves.append(move)
-
-    if len(lowest_suit_moves) == 0:
-        lowest_suit_moves = moves
-
-    # Get move with highest rank available, of the subset that we've narrowed down so far
-    for move in lowest_suit_moves:
-        if move[0] is not None and move[0] % 5 <= chosen_move[0] % 5:
-            chosen_move = move
-
-    return chosen_move
 
 # For experiments, it's good to have repeatability, so we set the seed of the random number generator to a known value.
 # That way, if something interesting happens, we can always rerun the exact same experiment
@@ -96,26 +67,23 @@ random.seed(seed)
 
 # Parameters of our experiment
 STEPS = 10
-REPEATS = 5
 
-inc = 1.0/STEPS
 
 # Make empty matrices to count how many times each player won for a given
 # combination of parameters
-won_by_1 = empty(STEPS)
-won_by_2 = empty(STEPS)
+won_by_1 = 0
+won_by_2 = 0
 
 
 # We will move through the parameters from 0 to 1 in STEPS steps, and play REPEATS games for each
 # combination. If at combination (i, j) player 1 wins a game, we increment won_by_1[i][j]
 
 for i in range(STEPS):
-    for j in range(STEPS):
-        for r in range(REPEATS):
+    for j in range(100):
 
             # Make the players
-            player1 = Bot(inc * i)
-            player2 = Bot(inc * j)
+            player1 = group72_bot_minimax.Bot()
+            player2 = group72_bot_plain_ml.Bot() 
 
             state = State.generate()
 
@@ -128,41 +96,26 @@ for i in range(STEPS):
             if state.finished():
                 winner, points = state.winner()
                 if winner == 1:
-                    won_by_1[i][j] += points
+                    won_by_1 += 1
                 else:
-                    won_by_2[i][j] += points
-
-        print('finished {} vs {}'.format(inc * i, inc * j))
+                    won_by_2 += 1
 
 
 
-# This
-result = [[0 for i in range(STEPS)] for j in range(STEPS)]
 
-extreme = float('-inf')
-for i in range(STEPS):
-    for j in range(STEPS):
-        # How many more games player 1 won than player 2
-        result[i][j] = float(won_by_1[i][j] - won_by_2[i][j])
 
-        # Find the largest absolute value
-        extreme = max(extreme, abs(result[i][j]))
+
+
+
+
 
 # Plot the data as a heatmap
-plt.imshow(
-    result,
-    extent=(0,1,0,1), # fit it to the square from (0,0) to (1,1)
-    vmin=-extreme,  # give this value the lowest color (blue)
-    vmax=extreme,    # give this value the higest color (red)
-    interpolation='nearest', # don't smooth the colors
-    origin='lower')    # put the result[0][0] in the bottem left corner
+names = ['won_by_plain_ml', 'won_by_minimax_ml']
+values = [won_by_1, won_by_2]
 
+plt.figure(figsize=(20, 20))
+plt.subplot(131)
+plt.bar(names, values)
 # Always label your axes
-plt.xlabel('player 1 lowmove probability')
-plt.ylabel('player 2 lowmove probability')
 
-# Set the red/blue colormap
-plt.set_cmap('bwr')
-plt.colorbar()
-
-plt.savefig('experiment.pdf')
+plt.savefig('experiment_plain_vs_minimax_1000_games.pdf')

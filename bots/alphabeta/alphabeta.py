@@ -48,7 +48,7 @@ class Bot:
 
         for move in moves:
 
-            next_state = state.next(move)
+            next_state = state.next(move) 
             value, _ = self.heuristic(next_state)
 
             if maximizing(state):

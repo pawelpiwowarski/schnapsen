@@ -1,5 +1,5 @@
 """
-Simple script for extracting 4 the most important feautures, from a data set. 
+Simple script for extracting 4 of the most important feautures, from a data set. 
 """
 from distutils.command.build_scripts import first_line_re
 from api import State, util
@@ -22,7 +22,7 @@ from sklearn.feature_selection import chi2
 from bots.rand import rand
 # from bots.rdeep import rdeep
 
-from bots.group72_bot.group72_bot import features
+from bots.group72_bot_minimax.group72_bot_minimax import features
 
 def create_dataset(path, player=rand.Bot(), games=100, phase=1):
     """Create a dataset that can be used for training the ML bot model.
@@ -151,12 +151,14 @@ if options.train:
     with open(options.dset_path, 'rb') as output:
         data, target = pickle.load(output)
     
-    bestfeatures = SelectKBest(score_func=chi2, k=4)
+    bestfeatures = SelectKBest(score_func=chi2, k=2)
     fit = bestfeatures.fit_transform(data,target)
 
     labels = ['p1_points/total_points ', 'p2_points/total_points', 'p1_pending_points/total_pending_points', 'p2_pending_points/total_pending_points']
-    df = pd.DataFrame(data, columns=labels)
-    df.to_csv('importance_of_4_features.csv')
+    labels_2 = ['1','2']
+    #df = pd.DataFrame(fit, columns=labels)
+    df_2 = pd.DataFrame(fit, columns=labels_2)
+    df_2.to_csv('importance_of_2_features.csv')
     # Train a neural network
     
 

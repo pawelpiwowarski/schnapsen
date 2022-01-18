@@ -59,7 +59,7 @@ class Bot:
             # NOTE: This is different from the line in the minimax/alphabeta bot
             
             value = self.heuristic(next_state)
-            print(value)
+         
             if maximizing(state):
                 if value > best_value:
                     best_value = value

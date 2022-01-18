@@ -86,7 +86,7 @@ class Bot:
                     best_value = value
                     best_move = move
                     beta = best_value
-            if alpha > beta: # [GROUP 72 - commment]  here we implement the pruning which in the first phase isn't even taken into account,
+            if alpha >= beta: # [GROUP 72 - commment]  here we implement the pruning which in the first phase isn't even taken into account,
              # since if we are maximising player the value can't be bigger that (-infinty) and vice versa. 
                 break
 

@@ -6,14 +6,14 @@ Check that the minmax bot and alpha beta bot return the same judgement, and that
 from api import State, util
 import random, time
 
-from bots.alphabeta import alphabeta
-from bots.minimax import minimax
+from bots.group72_bot_alphabeta import group72_bot_alphabeta
+from bots.group72_bot_minimax import group72_bot_minimax
 
-REPEATS = 3
-DEPTH = 4
+REPEATS = 20
+DEPTH = 15
 
-ab = alphabeta.Bot(randomize=False, depth=DEPTH)
-mm = minimax.Bot(randomize=False, depth=DEPTH)
+ab = group72_bot_alphabeta.Bot(randomize=False, depth=DEPTH)
+mm = group72_bot_minimax.Bot(randomize=False, depth=DEPTH)
 
 mm_time = 0
 ab_time = 0
