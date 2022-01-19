@@ -23,8 +23,8 @@ from matplotlib import pyplot as plt
 from api import State, util
 
 import random
+from bots.group72_bot_limited_4_minimax import group72_bot_limited_4_minimax
 from bots.group72_bot_minimax import group72_bot_minimax
-from bots.group72_bot_limited_4 import group72_bot_limited_4
 
 # Define the bot:
 # (we're not using it with the command line tools, so we can just put it here)
@@ -82,8 +82,8 @@ for i in range(STEPS):
     for j in range(100):
 
             # Make the players
-            player1 = group72_bot_minimax.Bot()
-            player2 = group72_bot_limited_4.Bot() 
+            player1 = group72_bot_limited_4_minimax.Bot()
+            player2 = group72_bot_minimax.Bot()
 
             state = State.generate()
 
@@ -110,7 +110,7 @@ for i in range(STEPS):
 
 
 # Plot the data as a heatmap
-names = ['won_by_minimax_ml', 'won_by_limited_ml']
+names = ['group72_bot_limited_4_minimax', 'won by group72_bot_minimax']
 values = [won_by_1, won_by_2]
 
 plt.figure(figsize=(20, 20))
@@ -118,4 +118,4 @@ plt.subplot(131)
 plt.bar(names, values)
 # Always label your axes
 
-plt.savefig('experiment_plain_vs_limited_1000_games.pdf')
+plt.savefig('experiment_minimax_vs_limited_minimax_1000_games.pdf')

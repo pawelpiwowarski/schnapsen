@@ -132,6 +132,8 @@ def features(state):
     :return: A tuple of floats: a feature vector representing this state.
     """
 
+
+        
     feature_set = []
 
     # Add player 1's points to feature set
@@ -164,11 +166,28 @@ def features(state):
     # Add opponent's played card to feature set
     opponents_played_card = state.get_opponents_played_card()
 
-
+    # How many trump does a player hold? 
+ 
+		#Get all trump suit moves available
+    
     ################## You do not need to do anything below this line ########################
 
+    perspective = state.get_perspective()
 
+    # Perform one-hot encoding on the perspective.
+    # Learn more about one-hot here: https://machinelearningmastery.com/how-to-one-hot-encode-sequence-data-in-python/
+    perspective = [card if card != 'U'   else [1, 0, 0, 0, 0, 0] for card in perspective]
+    perspective = [card if card != 'S'   else [0, 1, 0, 0, 0, 0] for card in perspective]
+    perspective = [card if card != 'P1H' else [0, 0, 1, 0, 0, 0] for card in perspective]
+    perspective = [card if card != 'P2H' else [0, 0, 0, 1, 0, 0] for card in perspective]
+    perspective = [card if card != 'P1W' else [0, 0, 0, 0, 1, 0] for card in perspective]
+    perspective = [card if card != 'P2W' else [0, 0, 0, 0, 0, 1] for card in perspective]
 
+    # Append one-hot encoded perspective to feature_set
+
+    feature_set += list(chain(*perspective))
+
+   
     # Append normalized points to feature_set
     total_points = p1_points + p2_points
     feature_set.append(p1_points/total_points if total_points > 0 else 0.)
@@ -181,7 +200,29 @@ def features(state):
 
     # Convert trump suit to id and add to feature set
     # You don't need to add anything to this part
-  
+    suits = ["C", "D", "H", "S"]
+    trump_suit_onehot = [0, 0, 0, 0]
+    trump_suit_onehot[suits.index(trump_suit)] = 1
+    feature_set += trump_suit_onehot
+
+    # Append one-hot encoded phase to feature set
+    feature_set += [1, 0] if phase == 1 else [0, 1]
+
+    # Append normalized stock size to feature set
+    feature_set.append(stock_size/10)
+
+    # Append one-hot encoded leader to feature set
+    feature_set += [1, 0] if leader == 1 else [0, 1]
+
+    # Append one-hot encoded whose_turn to feature set
+    feature_set += [1, 0] if whose_turn == 1 else [0, 1]
+
+    # Append one-hot encoded opponent's card to feature set
+    opponents_played_card_onehot = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    opponents_played_card_onehot[opponents_played_card if opponents_played_card is not None else 20] = 1
+    feature_set += opponents_played_card_onehot
 
     # Return feature set
+
+
     return feature_set

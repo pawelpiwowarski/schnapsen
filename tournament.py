@@ -69,7 +69,7 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--repeats",
                         dest="repeats",
                         help="How many matches to play for each pair of bots",
-                        type=int, default=10)
+                        type=int, default=100)
 
     parser.add_argument("-t", "--max-time",
                         dest="max_time",

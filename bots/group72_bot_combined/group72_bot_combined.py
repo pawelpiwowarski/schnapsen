@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 """
-Modified version of the ml bot trained on 2000 games played by rand that in the second phase switches to using minimax algorithm
-but this time using also alphabeta pruning to save some computational time.
-When run a tournament against rand it won significantly. " 
-All comments made by our group are marked as [GROUP 72 - commment]" 
-"""
+The simplest version of our bot, just a copy of the ml bot but with 
+additional features - number of aces in the hand of the current player +
+number of trump cards, in the second
+phase it also switches to minimax algorithm. """
+
+
+
+
 
 from api import State, util
 import random, os
@@ -39,7 +42,7 @@ class Bot:
         return move
         
 
-    def value(self, state, depth = 0, alpha=float('-inf'), beta=float('inf')):
+    def value(self, state, depth = 0):
         """
         Return the value of this state and the associated move
         :param state:
@@ -67,28 +70,26 @@ class Bot:
             # contain the predicted value of 'next_state'
             # NOTE: This is different from the line in the minimax/alphabeta bot
 
-            if state.get_phase() == 1:
+            if state.get_phase() == 1: # [GROUP 72 - commment] if we are not in the second phase our bot "switches" to using minimax algorithm. 
+
                 value = self.heuristic(next_state)
-            else: # [GROUP 72 - commment] it is possible to limit the depth of the minimax search by adding 
+            else:
+                value, _ = self.value(next_state)  # [GROUP 72 - commment] it is possible to limit the depth of the minimax search by adding 
                # additional parameters to the recursive method call like for example self.value(next_state, depth+1), and tweaking the maximum depth 
                # parameter in the class. In the case of this design we decided not to limit the depth in order to achieve the best performance, in spite of a
             # bigger computational needs. 
-                value, _ = self.value(next_state)
+        
 
             if maximizing(state):
                 if value > best_value:
                     best_value = value
                     best_move = move
-                    alpha = best_value
                  
             else:
                 if value < best_value:
                     best_value = value
                     best_move = move
-                    beta = best_value
-            if alpha >= beta: # [GROUP 72 - commment]  here we implement the pruning which in the first phase isn't even taken into account,
-             # since if we are maximising player the value can't be bigger that (-infinty) and vice versa. 
-                break
+
 
         return best_value, best_move
 
@@ -229,3 +230,5 @@ def features(state):
 
 
     return feature_set
+
+
