@@ -19,9 +19,9 @@ from sklearn.neural_network import MLPClassifier
 import joblib
 
 from bots.rand import rand
-# from bots.rdeep import rdeep
+#from bots.rdeep import rdeep
 
-from bots.group72_bot_limited_4.group72_bot_limited_4 import features
+from bots.group72_bot_plain_ml_rdeep.group72_bot_plain_ml_rdeep import features
 
 def create_dataset(path, player=rand.Bot(), games=2000, phase=1):
     """Create a dataset that can be used for training the ML bot model.
@@ -121,7 +121,7 @@ parser.add_argument("--no-train",
 options = parser.parse_args()
 
 if options.overwrite or not os.path.isfile(options.dset_path):
-    create_dataset(options.dset_path, player=rand.Bot(), games=10000)
+    create_dataset(options.dset_path, player=rdeep.Bot(), games=10000)
 
 if options.train:
 
@@ -166,7 +166,7 @@ if options.train:
     print('instances per class: {}'.format(count))
 
     # Store the model in the ml directory
-    joblib.dump(model, "./bots/group72_bot_limited_4/" + options.model_path)
+    joblib.dump(model, "./bots/group72_bot_plain_ml_rdeep/" + options.model_path)
 
     end = time.time()
 

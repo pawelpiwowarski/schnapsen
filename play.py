@@ -45,7 +45,7 @@ if __name__ == "__main__":
     parser.add_argument("-1", "--player1",
                         dest="player1",
                         help="the program to run for player 1 (default: rand)",
-                        default="group72_bot_combined")
+                        default="group72_bot_trump_suit")
 
     parser.add_argument("-2", "--player2",
                         dest="player2",

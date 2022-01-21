@@ -5,7 +5,7 @@ additional feature - number of trump cards in the hand of the current player in 
 phase it also switches to minimax algorithm. 
 
 """
-from api import State, util
+from api import State, Deck, util
 import random, os
 from itertools import chain
 from  bots import alphabeta
@@ -23,7 +23,7 @@ class Bot:
 
     def __init__(self, randomize=True, model_file=DEFAULT_MODEL, depth = 6):
 
-        print(model_file)
+       
         self.__randomize = randomize
 
         # Load the model
@@ -57,7 +57,7 @@ class Bot:
 
         if self.__randomize:
             random.shuffle(moves)
-
+        hand_in_phase_1 = state.hand()
         for move in moves:
 
             next_state = state.next(move)
@@ -68,7 +68,7 @@ class Bot:
 
             if state.get_phase() == 1: # [GROUP 72 - commment] if we are not in the second phase our bot "switches" to using minimax algorithm. 
 
-                value = self.heuristic(next_state)
+                value = self.heuristic(next_state, hand_in_phase_1)
             else:
                 value, _ = self.value(next_state)  # [GROUP 72 - commment] it is possible to limit the depth of the minimax search by adding 
                # additional parameters to the recursive method call like for example self.value(next_state, depth+1), and tweaking the maximum depth 
@@ -89,10 +89,10 @@ class Bot:
 
         return best_value, best_move
 
-    def heuristic(self, state):
+    def heuristic(self, state, h):
 
         # Convert the state to a feature vector
-        feature_vector = [features(state)]
+        feature_vector = [features(state, h)]
 
         # These are the classes: ('won', 'lost')
         classes = list(self.__model.classes_)
@@ -123,8 +123,8 @@ def maximizing(state):
     return state.whose_turn() == 1
 
 
-def features(state):
-    # type: (State) -> tuple[float, ...]
+def features(state, h):
+
     """
     Extract features from this state. Remember that every feature vector returned should have the same length.
 
@@ -224,6 +224,14 @@ def features(state):
 
     # Return feature set
 
-
+    def get_ratio_of_trump(t_s, h):
+    
+        n = 0 
+        for card in h:
+            if  Deck.get_suit(card) == t_s:
+                n += 1
+        return n/len(h)
+   
+    feature_set.append(get_ratio_of_trump(trump_suit, h))
     return feature_set
 
