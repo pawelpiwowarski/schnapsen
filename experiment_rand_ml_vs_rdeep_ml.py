@@ -21,7 +21,8 @@ import matplotlib as mpl
 mpl.use('Agg')
 from matplotlib import pyplot as plt
 from api import State, util
-
+import numpy as np
+from statsmodels.stats.proportion import binom_test
 import random
 from bots.group72_bot_plain_ml import group72_bot_plain_ml
 from bots.group72_bot_plain_ml_rdeep import group72_bot_plain_ml_rdeep
@@ -107,15 +108,15 @@ for i in range(STEPS):
 
 
 
+p_value = binom_test(won_by_2, 1000, prop=0.5, alternative='larger') # Alternative could get three values : "two-sided", "larger", "smaller"
 
 
 # Plot the data as a heatmap
-names = ['won by ' + 'group72_bot_plain_ml', 'won by ' + 'group72_bot_ml_rdeep']
+names = [str(won_by_1) + ' games won by  ' + 'group72_bot_ml_rand \n', str(won_by_2) +' games won by ' + 'group72_bot_ml_rdeep \n' + ' \n p_value = '+  str(p_value)   ]
 values = [won_by_1, won_by_2]
 
-plt.figure(figsize=(20, 20))
-plt.subplot(131)
-plt.bar(names, values)
+plt.figure(figsize=(10, 10))
+plt.bar(names, values, align='center')
 # Always label your axes
 
-plt.savefig('experiment_group72_bot_plain_ml_vs_group72_bot_ml_rdeep_1000_games.pdf')
+plt.savefig('experiment_' + 'seed' + str(seed) + ' _group72_bot_ml_rand_vs_group72_bot_ml_rdeep_1000_games.pdf')

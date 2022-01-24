@@ -15,6 +15,10 @@ This is a simple question to answer, we simply build rand bots for a range of pa
 combination. We plot the results in a heat map
 
 """
+import numpy as np
+from statsmodels.stats.proportion import binom_test
+from statsmodels.stats.multitest import multipletests
+from statsmodels.stats.proportion import proportions_ztest
 from os import stat
 from shutil import move
 import matplotlib as mpl
@@ -24,7 +28,7 @@ from api import State, util
 
 import random
 from bots.group72_bot_plain_ml import group72_bot_plain_ml
-from bots.group72_bot_limited_4 import group72_bot_limited_4
+from bots.group72_bot_limited_4_minimax import group72_bot_limited_4_minimax
 
 # Define the bot:
 # (we're not using it with the command line tools, so we can just put it here)
@@ -79,11 +83,11 @@ won_by_2 = 0
 # combination. If at combination (i, j) player 1 wins a game, we increment won_by_1[i][j]
 
 for i in range(STEPS):
-    for j in range(1):
+    for j in range(100):
 
             # Make the players
             player1 = group72_bot_plain_ml.Bot()
-            player2 = group72_bot_limited_4.Bot() 
+            player2 = group72_bot_limited_4_minimax.Bot() 
 
             state = State.generate()
 
@@ -105,17 +109,17 @@ for i in range(STEPS):
 
 
 
+p_value = binom_test(won_by_1, 1000, prop=0.5, alternative='larger') # Alternative could get three values : "two-sided", "larger", "smaller"
 
 
-
+print("The p-value is: ", p_value)
 
 # Plot the data as a heatmap
-names = ['won_by_plain_ml', 'won_by_limited_ml']
+names = [ str(won_by_1) + ' games won_by_plain_ml \n p_value=' + str(p_value), str(won_by_2) +  ' games won_by_limited_ml']
 values = [won_by_1, won_by_2]
 
-plt.figure(figsize=(20, 20))
-plt.subplot(131)
-plt.bar(names, values)
+plt.figure(figsize=(10, 10))
+plt.bar(names, values, align='center', data=p_value)
 # Always label your axes
 
-plt.savefig('experiment_plain_vs_limited_1000_games.pdf')
+plt.savefig('experiment' + '_seed' + str(seed)  +'_plain_vs_limited_1000_games.pdf')

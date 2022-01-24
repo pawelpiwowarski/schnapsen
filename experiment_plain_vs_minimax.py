@@ -15,6 +15,8 @@ This is a simple question to answer, we simply build rand bots for a range of pa
 combination. We plot the results in a heat map
 
 """
+from statsmodels.stats.proportion import binom_test
+
 from os import stat
 from shutil import move
 import matplotlib as mpl
@@ -84,6 +86,8 @@ for i in range(STEPS):
             player1 = group72_bot_minimax.Bot()
             player2 = group72_bot_plain_ml.Bot() 
 
+
+            state = State.generate()
     
             # play the game
             while not state.finished():
@@ -107,13 +111,16 @@ for i in range(STEPS):
 
 
 
-# Plot the data as a heatmap
-names = ['won_by_plain_ml', 'won_by_minimax_ml']
+
+p_value = binom_test(won_by_1, 1000, prop=0.5, alternative='larger') # Alternative could get three values : "two-sided", "larger", "smaller"
+
+
+names = [str(won_by_1) + ' games won by  ' + 'group72_bot_ml_minimax \n' + ' \n p_value = '+  str(p_value), str(won_by_2) +' games won by ' + 'group72_bot_ml_plain \n'    ]
 values = [won_by_1, won_by_2]
 
-plt.figure(figsize=(20, 20))
-plt.subplot(131)
-plt.bar(names, values)
+plt.figure(figsize=(10, 10))
+plt.bar(names, values, align='center')
+
 # Always label your axes
 
-plt.savefig('experiment_plain_vs_minimax_1000_games.pdf')
+plt.savefig('experiment_ '+ 'seed'+ str(seed) + '_plain_vs_minimax_1000_games.pdf')
